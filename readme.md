@@ -27,5 +27,6 @@ Also it will check the code in CI
 1. `composer install`
 2. `@php -r "file_exists('.env') || copy('.env.example', '.env');"`
 3. `php artisan key:generate`
-4. `npm install`
-5. `npm run dev`
+4. Tweak `.env` file
+5. `npm install`
+6. `npm run dev`
