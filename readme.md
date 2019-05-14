@@ -28,5 +28,18 @@ Also it will check the code in CI
 2. `@php -r "file_exists('.env') || copy('.env.example', '.env');"`
 3. `php artisan key:generate`
 4. Tweak `.env` file
-5. `npm install`
-6. `npm run dev`
+5. `php artisan migrate`
+6. `npm install`
+7. `npm run dev`
+
+### Fake data
+To fill in the database with test data run `php artisan db:seed` 
+
+### Code explanation
+As the backend is Restful Api and I assumed that different clients can access it
+(not only out of the box), I've decided to make some version separation.
+You can see it in `tests` and `controllers`
+
+I like using standard Laravel resources controllers. 
+But for Api I change name of the `index` method to `get`, 
+and `show` method to `getSpecific`  

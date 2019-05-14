@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Book library</title>
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     </head>
     <body>
         <div id="app"><app></app></div>
