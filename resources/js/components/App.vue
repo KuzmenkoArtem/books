@@ -7,22 +7,31 @@
             <el-table-column prop="created_at" label="Created at"></el-table-column>
             <el-table-column label="Operations" align="right" width="100px">
                 <template slot-scope="scope">
+                    <el-button @click="editingBook = scope.row" type="primary" icon="el-icon-edit" circle size="small"></el-button>
                     <el-button @click="deleteBook(scope.row)" type="danger" icon="el-icon-delete" circle size="small"></el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <updating-book-dialog :book="editingBook" @closed="editingBook = null" @updated="getBooks"></updating-book-dialog>
     </div>
 </template>
 
 <script>
     import ApiBridge from './../api-bridge';
+    import UpdatingBookDialog from './UpdatingBookDialog';
 
     export default {
+        components: {
+            UpdatingBookDialog
+        },
+
         data() {
             return {
                 books: [],
                 pageLoading: false,
-                sorting: null
+                sorting: null,
+                editingBook: null
             }
         },
 

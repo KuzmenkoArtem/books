@@ -130,4 +130,72 @@ class BooksTest extends TestCase
 
         $response->assertNotFound();
     }
+
+    /** @test */
+    public function updatingBook()
+    {
+        $book = factory(Book::class)->create();
+        $newAuthor = 'Jon Snow';
+
+        $response = $this->put("api/v1/books/{$book->id}", ['author' => $newAuthor]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas('books', [
+            'id' => $book->id,
+            'author' => $newAuthor
+        ]);
+    }
+
+    /** @test */
+    public function updatingNonexistentBook()
+    {
+        factory(Book::class)->create();
+        $newAuthor = 'Jon Snow';
+
+        $response = $this->put("api/v1/books/999", ['author' => $newAuthor]);
+
+        $response->assertNotFound();
+    }
+
+    /** @test */
+    public function updatingBookWithNotAllowedField()
+    {
+        $book = factory(Book::class)->create();
+        $newTitle = 'Anna Karenina';
+
+        $response = $this->put("api/v1/books/{$book->id}", ['title' => $newTitle]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas('books', [
+            'id' => $book->id,
+            'title' => $book->title
+        ]);
+    }
+
+    /** @test */
+    public function updatingBookWithNonexistentField()
+    {
+        $book = factory(Book::class)->create();
+
+        $response = $this->put("api/v1/books/{$book->id}", ['nonexistent_field' => 'value']);
+
+        $response->assertOk();
+    }
+
+    /** @test */
+    public function updatingBookWithWrongFormat()
+    {
+        $book = factory(Book::class)->create();
+        $newAuthor = 'Fyodor Dostoevsky';
+
+        $headers = [
+            "Accept" => 'application/json'
+        ];
+
+        $wrongFormat = ['author' => [$newAuthor]];
+
+        $response = $this->put("api/v1/books/{$book->id}", $wrongFormat, $headers);
+
+        $response->assertStatus(422);
+    }
 }

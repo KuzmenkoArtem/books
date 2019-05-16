@@ -14,4 +14,8 @@ class Book extends Model implements SortableModel
         'title',
         'author'
     ];
+
+    protected $fillable = [
+        'author'
+    ];
 }

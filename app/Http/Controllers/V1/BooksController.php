@@ -51,11 +51,19 @@ class BooksController extends BaseController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $request->validate(
+            [
+                'author' => 'string'
+            ],
+            [
+                'author.string' => '"author" should be a string'
+            ]
+        );
+
+        $book->update($request->all());
     }
 
     /**

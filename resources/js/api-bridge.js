@@ -26,7 +26,13 @@ export default {
         },
 
         'delete': function (id) {
-            return axiosInstance.delete(parseUrl('books/:id', {id}));
+            let url = parseUrl('books/:id', {id});
+            return axiosInstance.delete(url);
+        },
+
+        update: function (id, params) {
+            let url = parseUrl('books/:id', {id});
+            return axiosInstance.put(url, params);
         },
     },
 }
