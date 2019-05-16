@@ -3408,7 +3408,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       books: [],
-      pageLoading: false
+      pageLoading: false,
+      sorting: null
     };
   },
   mounted: function mounted() {
@@ -3418,7 +3419,13 @@ __webpack_require__.r(__webpack_exports__);
     getBooks: function getBooks() {
       var _this = this;
 
-      _api_bridge__WEBPACK_IMPORTED_MODULE_0__["default"].books.getAll().then(function (_ref) {
+      var params = {};
+
+      if (this.sorting) {
+        params['sort'] = [this.sorting];
+      }
+
+      _api_bridge__WEBPACK_IMPORTED_MODULE_0__["default"].books.getAll(params).then(function (_ref) {
         var data = _ref.data;
         _this.pageLoading = false;
         _this.books = data.books;
@@ -3431,6 +3438,29 @@ __webpack_require__.r(__webpack_exports__);
           message: 'Something went wrong'
         });
       });
+    },
+    sortingChanged: function sortingChanged(event) {
+      if (event.prop) {
+        var order = null;
+
+        switch (event.order) {
+          case "descending":
+            order = 'desc';
+            break;
+
+          case "ascending":
+            order = 'asc';
+        }
+
+        this.sorting = {
+          "field": event.prop,
+          "direction": order
+        };
+      } else {
+        this.sorting = null;
+      }
+
+      this.getBooks();
     }
   }
 });
@@ -73680,14 +73710,17 @@ var render = function() {
     [
       _c(
         "el-table",
-        { attrs: { data: _vm.books } },
+        {
+          attrs: { data: _vm.books },
+          on: { "sort-change": _vm.sortingChanged }
+        },
         [
           _c("el-table-column", {
-            attrs: { prop: "title", label: "Title", sortable: "" }
+            attrs: { prop: "title", label: "Title", sortable: "custom" }
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "author", label: "Author", sortable: "" }
+            attrs: { prop: "author", label: "Author", sortable: "custom" }
           }),
           _vm._v(" "),
           _c("el-table-column", {

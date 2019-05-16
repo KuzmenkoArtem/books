@@ -9,27 +9,19 @@ use App\Http\Controllers\Controller as BaseController;
 class BooksController extends BaseController
 {
     /**
-     * Get a list of books.
+     * Get a list of books applying sorting on demand.
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function get()
+    public function get(Request $request)
     {
-        $books = Book::latest()->get();
+        $sort = $request->get('sort');
+        $books = Book::sort($sort)->latest()->get();
 
         return $this->jsonResponse([
             'books' => $books
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -44,7 +36,7 @@ class BooksController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified book.
      *
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\JsonResponse
@@ -55,18 +47,7 @@ class BooksController extends BaseController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Book $book)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update the specified book in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Book  $book

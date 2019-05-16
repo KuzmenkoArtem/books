@@ -1,8 +1,8 @@
 <template>
     <div class="container" v-loading="pageLoading">
-        <el-table :data="books">
-            <el-table-column prop="title" label="Title" sortable></el-table-column>
-            <el-table-column prop="author" label="Author" sortable></el-table-column>
+        <el-table :data="books" @sort-change="sortingChanged">
+            <el-table-column prop="title" label="Title" sortable="custom"></el-table-column>
+            <el-table-column prop="author" label="Author" sortable="custom"></el-table-column>
             <el-table-column prop="updated_at" label="Updated at"></el-table-column>
             <el-table-column prop="created_at" label="Created at"></el-table-column>
         </el-table>
@@ -16,7 +16,8 @@
         data() {
             return {
                 books: [],
-                pageLoading: false
+                pageLoading: false,
+                sorting: null
             }
         },
 
@@ -26,7 +27,13 @@
 
         methods: {
             getBooks() {
-                ApiBridge.books.getAll().then(({data}) => {
+                let params = {};
+
+                if (this.sorting) {
+                    params['sort'] = [this.sorting];
+                }
+
+                ApiBridge.books.getAll(params).then(({data}) => {
                     this.pageLoading = false;
                     this.books = data.books;
                 }).catch((error) => {
@@ -37,6 +44,25 @@
                         message: 'Something went wrong'
                     });
                 });
+            },
+
+            sortingChanged(event) {
+                if (event.prop) {
+                    let order = null;
+                    switch(event.order) {
+                        case "descending": order = 'desc'; break;
+                        case "ascending": order = 'asc';
+                    }
+
+                    this.sorting = {
+                        "field": event.prop,
+                        "direction": order
+                    };
+                } else {
+                    this.sorting = null;
+                }
+
+                this.getBooks();
             }
         }
     }
