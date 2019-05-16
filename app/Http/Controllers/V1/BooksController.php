@@ -59,13 +59,13 @@ class BooksController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified book from storage.
      *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Book $book
+     * @throws \Exception
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
     }
 }

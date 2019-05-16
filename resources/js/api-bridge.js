@@ -24,5 +24,9 @@ export default {
                 params: params,
             });
         },
+
+        'delete': function (id) {
+            return axiosInstance.delete(parseUrl('books/:id', {id}));
+        },
     },
 }

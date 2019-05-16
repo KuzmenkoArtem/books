@@ -3403,6 +3403,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3461,6 +3466,30 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.getBooks();
+    },
+    deleteBook: function deleteBook(book) {
+      var _this2 = this;
+
+      this.$confirm('Are you sure you want to delete - ' + book.title, {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(function () {
+        _this2.pageLoading = true;
+        _api_bridge__WEBPACK_IMPORTED_MODULE_0__["default"].books["delete"](book.id).then(function () {
+          _this2.pageLoading = false;
+
+          _this2.getBooks();
+        })["catch"](function (error) {
+          _this2.pageLoading = false;
+          console.log(error);
+
+          _this2.$notify.error({
+            title: 'Error',
+            message: 'Something went wrong'
+          });
+        });
+      })["catch"](function () {});
     }
   }
 });
@@ -73729,6 +73758,32 @@ var render = function() {
           _vm._v(" "),
           _c("el-table-column", {
             attrs: { prop: "created_at", label: "Created at" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { label: "Operations", align: "right", width: "100px" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _c("el-button", {
+                      attrs: {
+                        type: "danger",
+                        icon: "el-icon-delete",
+                        circle: "",
+                        size: "small"
+                      },
+                      on: {
+                        click: function($event) {
+                          return _vm.deleteBook(scope.row)
+                        }
+                      }
+                    })
+                  ]
+                }
+              }
+            ])
           })
         ],
         1
@@ -85914,6 +85969,11 @@ function parseUrl(url, params) {
       return axiosInstance.get('/books', {
         params: params
       });
+    },
+    'delete': function _delete(id) {
+      return axiosInstance["delete"](parseUrl('books/:id', {
+        id: id
+      }));
     }
   }
 });

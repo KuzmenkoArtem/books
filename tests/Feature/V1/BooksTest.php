@@ -107,4 +107,27 @@ class BooksTest extends TestCase
         $actual = Arr::pluck($booksInResponse, 'id');
         $this->assertEquals($expected, $actual);
     }
+
+    /** @test */
+    public function deletingBook()
+    {
+        $book = factory(Book::class)->create();
+
+        $response = $this->delete("api/v1/books/{$book->id}");
+
+        $response->assertOk();
+        $this->assertDatabaseMissing('books', [
+            'id' => $book->id
+        ]);
+    }
+
+    /** @test */
+    public function deletingNonexistentBook()
+    {
+        factory(Book::class)->create();
+
+        $response = $this->delete("api/v1/books/999");
+
+        $response->assertNotFound();
+    }
 }
