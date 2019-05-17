@@ -17,7 +17,8 @@ class BooksController extends BaseController
     public function get(Request $request)
     {
         $sort = $request->get('sort');
-        $books = Book::sort($sort)->latest()->get();
+        $filterGroups = $request->get('filter_groups');
+        $books = Book::filter($filterGroups)->sort($sort)->latest()->get();
 
         return $this->jsonResponse([
             'books' => $books
