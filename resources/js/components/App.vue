@@ -47,6 +47,7 @@
                     params['sort'] = [this.sorting];
                 }
 
+                this.pageLoading = true;
                 ApiBridge.books.getAll(params).then(({data}) => {
                     this.pageLoading = false;
                     this.books = data.books;

@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="Update"
+    <el-dialog :title="dialogTitle"
                :visible.sync="showDialog"
                :before-close="close"
                width="35%"
@@ -29,6 +29,12 @@
                 showDialog: false,
                 author: null,
                 loading: false
+            }
+        },
+
+        computed: {
+            dialogTitle() {
+                return 'Update' + (this.book ? ' - ' + this.book.title : '');
             }
         },
 
