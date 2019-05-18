@@ -8,6 +8,13 @@ use App\Traits\EloquentFiltering;
 use App\Traits\EloquentSorting;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Book
+ *
+ * @property string title
+ * @property string author
+ * @package App\Models
+ */
 class Book extends Model implements SortableModel, FilterableModel
 {
     use EloquentSorting, EloquentFiltering;

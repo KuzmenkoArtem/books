@@ -197,5 +197,63 @@ class BooksTest extends TestCase
         $response = $this->put("api/v1/books/{$book->id}", $wrongFormat, $headers);
 
         $response->assertStatus(422);
+        $response->assertJsonStructure([
+            'errors' => [
+                'author'
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function creatingBook()
+    {
+        $data = [
+            'title' => 'Harry Potter',
+            'author' => 'Joanne Rowling'
+        ];
+
+        $response = $this->post("api/v1/books", $data);
+
+        $response->assertOk();
+        $this->assertDatabaseHas('books', $data);
+    }
+
+    /** @test */
+    public function creatingBookWithMissingFields()
+    {
+        $headers = [
+            "Accept" => 'application/json'
+        ];
+
+        $response = $this->post("api/v1/books", [], $headers);
+        $response->assertStatus(422);
+        $response->assertJsonStructure([
+            'errors' => [
+                'title',
+                'author'
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function creatingBookWithWrongFormat()
+    {
+        $headers = [
+            "Accept" => 'application/json'
+        ];
+
+        $data = [
+            'title' => ['Harry Potter'],
+            'author' => ['Joanne Rowling']
+        ];
+
+        $response = $this->post("api/v1/books", $data, $headers);
+        $response->assertStatus(422);
+        $response->assertJsonStructure([
+            'errors' => [
+                'title',
+                'author'
+            ]
+        ]);
     }
 }

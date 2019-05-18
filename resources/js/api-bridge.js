@@ -34,5 +34,9 @@ export default {
             let url = parseUrl('books/:id', {id});
             return axiosInstance.put(url, params);
         },
+
+        create: function (params) {
+            return axiosInstance.post('books', params);
+        },
     },
 }

@@ -1,6 +1,7 @@
 ### Spec
 Site Visitor can:
 - see list of books
+- add a book to the list
 - delete a book from the list
 - change an authors name
 - sort by title or author

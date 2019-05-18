@@ -46,6 +46,23 @@
             </el-table-column>
         </el-table>
 
+        <el-row class="add-new-book" :gutter="20">
+            <el-col :span="11">
+                <el-input v-model="newBook.title" placeholder="Title" :disabled="bookSaving"></el-input>
+            </el-col>
+
+            <el-col :span="11">
+                <el-input v-model="newBook.author" placeholder="Author" :disabled="bookSaving"></el-input>
+            </el-col>
+
+            <el-col :span="2">
+                <el-button @click="createBook"
+                           type="primary"
+                           :icon="bookSaving ? 'el-icon-loading' : 'el-icon-circle-plus-outline'">
+                </el-button>
+            </el-col>
+        </el-row>
+
         <updating-book-dialog :book="editingBook" @closed="editingBook = null" @updated="getBooks"></updating-book-dialog>
     </div>
 </template>
@@ -75,7 +92,13 @@
                             author: null
                         },
                     }
-                ]
+                ],
+
+                newBook: {
+                    title: null,
+                    author: null
+                },
+                bookSaving: false
             }
         },
 
@@ -194,16 +217,53 @@
                 }
 
                 return filterGroups;
+            },
+
+            createBook() {
+                this.bookSaving = true;
+                ApiBridge.books.create(this.newBook).then(() => {
+                    this.bookSaving = false;
+
+                    this.newBook.author = null;
+                    this.newBook.title = null;
+
+                    this.getBooks();
+                }).catch(({response}) => {
+                    this.bookSaving = false;
+
+                    if (response.status !== 422) {
+                        console.log(error);
+                        this.$notify.error({
+                            title: 'Error',
+                            message: 'Something went wrong'
+                        });
+
+                        return;
+                    }
+
+                    for (let i in response.data.errors) {
+                        // timeout is for fixing an ui bug with overlaying messages on each other
+                        setTimeout(() => {
+                            this.$notify.error({
+                                title: 'Validation error',
+                                dangerouslyUseHTMLString: true,
+                                message: response.data.errors[i].join('<br />')
+                            });
+                        }, 0);
+                    }
+
+                });
             }
         }
     }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .container {
         width: 70%;
         margin-right: auto;
         margin-left: auto;
+        padding-bottom: 50px;
     }
 
     .filter-group {
@@ -215,5 +275,9 @@
         left: -80px;
         width: 80px;
         top: -28px;
+    }
+
+    .add-new-book {
+        margin-top: 20px;
     }
 </style>

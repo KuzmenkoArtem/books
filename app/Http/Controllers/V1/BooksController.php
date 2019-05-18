@@ -26,14 +26,21 @@ class BooksController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new book in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string',
+            'author' => 'required|string'
+        ]);
+
+        $book = new Book;
+        $book->title = $request->title;
+        $book->author = $request->author;
+        $book->save();
     }
 
     /**
@@ -55,14 +62,9 @@ class BooksController extends BaseController
      */
     public function update(Request $request, Book $book)
     {
-        $request->validate(
-            [
-                'author' => 'string'
-            ],
-            [
-                'author.string' => '"author" should be a string'
-            ]
-        );
+        $request->validate([
+            'author' => 'string'
+        ]);
 
         $book->update($request->all());
     }
