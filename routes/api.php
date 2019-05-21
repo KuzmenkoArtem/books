@@ -6,4 +6,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/books/', 'V1\BooksController@store');
     Route::delete('/books/{book}', 'V1\BooksController@destroy');
     Route::put('/books/{book}', 'V1\BooksController@update');
+
+    Route::get('/books/export/{type}', 'V1\BooksController@export');
 });

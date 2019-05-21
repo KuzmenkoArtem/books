@@ -38,5 +38,13 @@ export default {
         create: function (params) {
             return axiosInstance.post('books', params);
         },
+
+        'export': function (type, params) {
+            let url = parseUrl('books/export/:type', {type});
+            return axiosInstance.get(url, {
+                params,
+                responseType: 'blob',
+            });
+        }
     },
 }

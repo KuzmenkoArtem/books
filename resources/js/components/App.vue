@@ -63,6 +63,19 @@
             </el-col>
         </el-row>
 
+        <el-button @click="showExportingBookDialog = true"
+                   class="download-list-btn"
+                   type="primary"
+                   size="big"
+                   icon="el-icon-download">
+            Download this list
+        </el-button>
+
+        <exporting-books-dialog :visible="showExportingBookDialog"
+                                @closed="showExportingBookDialog = false"
+                                :filters="parsedFilterGroups"
+                                :sorting="sorting">
+        </exporting-books-dialog>
         <updating-book-dialog :book="editingBook" @closed="editingBook = null" @updated="getBooks"></updating-book-dialog>
     </div>
 </template>
@@ -70,10 +83,12 @@
 <script>
     import ApiBridge from './../api-bridge';
     import UpdatingBookDialog from './UpdatingBookDialog';
+    import ExportingBooksDialog from './ExportingBooksDialog';
 
     export default {
         components: {
-            UpdatingBookDialog
+            UpdatingBookDialog,
+            ExportingBooksDialog
         },
 
         data() {
@@ -98,7 +113,45 @@
                     title: null,
                     author: null
                 },
-                bookSaving: false
+                bookSaving: false,
+
+                showExportingBookDialog: false
+            }
+        },
+
+        computed: {
+            parsedFilterGroups() {
+                let filterGroups = [];
+                for (let i in this.filterGroups) {
+                    let data = this.filterGroups[i];
+
+                    let or = data.or;
+                    let filters = [];
+
+                    if (data.filters.title) {
+                        filters.push({
+                            or: data.filters.or,
+                            field: 'title',
+                            value: data.filters.title,
+                            operator: 'like'
+                        });
+                    }
+
+                    if (data.filters.author) {
+                        filters.push({
+                            or: data.filters.or,
+                            field: 'author',
+                            value: data.filters.author,
+                            operator: 'like'
+                        });
+                    }
+
+                    let filterGroup = {or, filters};
+
+                    filterGroups.push(filterGroup);
+                }
+
+                return filterGroups;
             }
         },
 
@@ -114,7 +167,7 @@
                     params['sort'] = [this.sorting];
                 }
 
-                params['filter_groups'] = this.getParsedFilterGroups();
+                params['filter_groups'] = this.parsedFilterGroups;
 
                 this.dataLoading = true;
                 ApiBridge.books.getAll(params).then(({data}) => {
@@ -185,40 +238,6 @@
                 this.filterGroups.splice(index, 1);
             },
 
-            getParsedFilterGroups() {
-                let filterGroups = [];
-                for (let i in this.filterGroups) {
-                    let data = this.filterGroups[i];
-
-                    let or = data.or;
-                    let filters = [];
-
-                    if (data.filters.title) {
-                        filters.push({
-                            or: data.filters.or,
-                            field: 'title',
-                            value: data.filters.title,
-                            operator: 'like'
-                        });
-                    }
-
-                    if (data.filters.author) {
-                        filters.push({
-                            or: data.filters.or,
-                            field: 'author',
-                            value: data.filters.author,
-                            operator: 'like'
-                        });
-                    }
-
-                    let filterGroup = {or, filters};
-
-                    filterGroups.push(filterGroup);
-                }
-
-                return filterGroups;
-            },
-
             createBook() {
                 this.bookSaving = true;
                 ApiBridge.books.create(this.newBook).then(() => {
@@ -278,6 +297,10 @@
     }
 
     .add-new-book {
+        margin-top: 20px;
+    }
+
+    .download-list-btn {
         margin-top: 20px;
     }
 </style>

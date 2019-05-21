@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Export\ExportableFile;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -23,5 +24,21 @@ class Controller extends BaseController
     protected function jsonResponse($data = [], int $status = 200, array $headers = [])
     {
         return response()->json($data, $status, $headers);
+    }
+
+    /**
+     * Forms json response for downloading file
+     * Accepts ExportableFile
+     *
+     * @param \App\Services\Export\ExportableFile $file
+     * @return \Illuminate\Http\Response
+     */
+    protected function streamDownloadFile(ExportableFile $file)
+    {
+        $headers = [
+            "Content-disposition" => "attachment; filename={$file->getFileName()}",
+        ];
+
+        return response()->make($file->getFileContent(), 200, $headers);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Models\Book;
+use App\Services\Export\ExporterFactory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as BaseController;
 
@@ -78,5 +79,26 @@ class BooksController extends BaseController
     public function destroy(Book $book)
     {
         $book->delete();
+    }
+
+    /**
+     * Remove the specified book from storage.
+     *
+     * @param Request $request
+     * @param string $type
+     * @return \Illuminate\Http\Response
+     * @throws \App\Exceptions\WrongExportingFormat
+     */
+    public function export(Request $request, string $type)
+    {
+        $sort = $request->get('sort');
+        $filterGroups = $request->get('filter_groups');
+        $fields = $request->get('fields', []);
+
+        $books = Book::filter($filterGroups)->sort($sort)->latest()->get();
+        $exporter = ExporterFactory::getExporter($type);
+        $file = $exporter->setCollection($books)->setFields($fields)->setFileName('books')->getFile();
+
+        return $this->streamDownloadFile($file);
     }
 }

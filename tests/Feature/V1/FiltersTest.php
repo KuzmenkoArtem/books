@@ -419,21 +419,4 @@ class FiltersTest extends TestCase
 
         $response->assertStatus(422);
     }
-
-    /**
-     * Forms filtering query params from array
-     *
-     * @param array $params
-     * @return string
-     */
-    protected function formFilteringQueryParams(array $params)
-    {
-        $queryString = '';
-
-        foreach ($params as $param) {
-            $queryString .= 'filter_groups[]=' . json_encode($param) . '&';
-        }
-
-        return $queryString;
-    }
 }
