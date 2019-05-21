@@ -51,16 +51,59 @@ I like using standard Laravel resource controllers.
 But for Api I usually change name of the `index` method to `get`, 
 and `show` method to `getSpecific`  
 
-**Sorting** - Even though according to the spec there should be 
-sorting by title or author, I added possibility to combine sorting by both fields
-you can see how it works in tests. 
+**Sorting** 
+You can apply sorting to any eloquent model
+
+You can combine sorting by any fields
+
+But in the UI you can sort only by one field (can explain it)
 
 Also you can easily add any other field for sorting and combine them
 
-If broken data is provided they will be ignored 
-(as it's not user inputs I've decided not to throw exceptions under validation)
+Api examples:
+* 1
+```
+    let params = {
+        "sort": [
+            {
+                "field": "title",
+                "direction": "desc",
+            }
+        ]
+    }
+    
+    // ?sort[]={"field":"title","direction":"desc"]}
+```
+will query:
+```
+    SELECT * FROM `table_name` ORDER BY `title` DESC
+```
 
-**Filtering** - 
+* 2
+```
+    let params = {
+        "sort": [
+            {
+                "field": "title",
+                "direction": "desc",
+            },
+            {
+                "field": "author",
+                "direction": "asc",
+            }
+        ]
+    }
+    
+    // ?sort[]={"field":"title","direction":"desc"]}&sort[]={"field":"author","direction":"asc"]}
+```
+will query:
+```
+    SELECT * FROM `table_name` ORDER BY `title` DESC, `author` ASC
+```
+
+**Filtering**
+You can apply filtering to any eloquent model
+
 As well as in sorting you can easily add any other field for filtering
 
 Also you can easily add any comparison operator or another logic you want
@@ -168,3 +211,5 @@ will query:
 (You can add as many groups as you want, as well as filter blocks)
 
 P.S. Of course you can combine sorting and filtering
+
+Please ask me if you have any other questions

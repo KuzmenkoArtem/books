@@ -56,37 +56,31 @@ class BooksTest extends TestCase
     /** @test */
     public function gettingAllBooksWithSortingByNonexistentField()
     {
-        $books = factory(Book::class, 10)->create();
+        factory(Book::class, 10)->create();
 
         $response = $this->get('api/v1/books?sort[]={"field":"nonexistent_field","direction":"desc"}');
 
-        $response->assertExactJson([
-            'books' => $books->toArray()
-        ]);
+        $response->assertStatus(422);
     }
 
     /** @test */
     public function gettingAllBooksWithSortingWithBrokenStructure()
     {
-        $books = factory(Book::class, 10)->create();
+        factory(Book::class, 10)->create();
 
         $response = $this->get('api/v1/books?sort[]={"broken_field":"nonexistent_field","broken_direction":"desc"}');
 
-        $response->assertExactJson([
-            'books' => $books->toArray()
-        ]);
+        $response->assertStatus(422);
     }
 
     /** @test */
     public function gettingAllBooksWithSortingWithBrokenDirection()
     {
-        $books = factory(Book::class, 10)->create();
+        factory(Book::class, 10)->create();
 
         $response = $this->get('api/v1/books?sort[]={"field":"title","direction":"wrong"}');
 
-        $response->assertExactJson([
-            'books' => $books->toArray()
-        ]);
+        $response->assertStatus(422);
     }
 
     /** @test */

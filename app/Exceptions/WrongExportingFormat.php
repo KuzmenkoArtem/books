@@ -14,7 +14,7 @@ class WrongExportingFormat extends Exception
     public function render()
     {
         $responseData = [
-            'exception' => 'Wrong exporting format',
+            'error' => 'Wrong exporting format',
             'message' => $this->message
         ];
         return response($responseData, 406);

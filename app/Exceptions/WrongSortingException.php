@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class WrongFilteringException extends Exception
+class WrongSortingException extends Exception
 {
     /**
      * Render the exception into an HTTP response.
@@ -14,7 +14,7 @@ class WrongFilteringException extends Exception
     public function render()
     {
         $responseData = [
-            'error' => 'Wrong filtering',
+            'error' => 'Wrong sorting',
             'message' => $this->message
         ];
         return response($responseData, 422);

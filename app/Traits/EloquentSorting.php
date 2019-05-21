@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Exceptions\WrongSortingException;
 use Illuminate\Database\Eloquent\Builder;
 
 trait EloquentSorting
@@ -35,6 +36,7 @@ trait EloquentSorting
      *
      * @param $unparsedSortingRules
      * @return array
+     * @throws WrongSortingException
      */
     protected function parseSortingRules($unparsedSortingRules)
     {
@@ -49,15 +51,15 @@ trait EloquentSorting
             $direction = $sortingRule['direction'] ?? null;
 
             if (!$field || !$direction) {
-                continue;
+                throw new WrongSortingException("Field and Direction are required");
             }
 
             if ($direction !== 'asc' && $direction !== 'desc') {
-                continue;
+                throw new WrongSortingException("Wrong direction");
             }
 
             if (!defined('self::SORTABLE_FIELDS') || !in_array($field, self::SORTABLE_FIELDS)) {
-                continue;
+                throw new WrongSortingException("{$field} is not available for sorting");
             }
 
             $sortingRules[$field] = $direction;
