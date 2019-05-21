@@ -1,3 +1,7 @@
+Demo link: [http://ec2-34-245-236-29.eu-west-1.compute.amazonaws.com](http://ec2-34-245-236-29.eu-west-1.compute.amazonaws.com)
+I uploaded the project to fresh ubuntu Amazon EC2 instance
+just to show my DevOps skills
+
 ### Spec
 Site Visitor can:
 - see list of books
@@ -26,7 +30,7 @@ Also it will check the code in CI
 
 ### Steps to install
 1. `composer install`
-2. `@php -r "file_exists('.env') || copy('.env.example', '.env');"`
+2. `php -r "file_exists('.env') || copy('.env.example', '.env');"`
 3. `php artisan key:generate`
 4. Tweak `.env` file
 5. `php artisan migrate`
@@ -51,7 +55,7 @@ I like using standard Laravel resource controllers.
 But for Api I usually change name of the `index` method to `get`, 
 and `show` method to `getSpecific`  
 
-**Sorting** 
+### Sorting
 You can apply sorting to any eloquent model
 
 You can combine sorting by any fields
@@ -101,7 +105,7 @@ will query:
     SELECT * FROM `table_name` ORDER BY `title` DESC, `author` ASC
 ```
 
-**Filtering**
+### Filtering
 You can apply filtering to any eloquent model
 
 As well as in sorting you can easily add any other field for filtering

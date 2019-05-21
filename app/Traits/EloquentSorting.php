@@ -47,6 +47,10 @@ trait EloquentSorting
                 $sortingRule = json_decode($sortingRule, true);
             }
 
+            if (!$sortingRule) {
+                continue;
+            }
+
             $field = $sortingRule['field'] ?? null;
             $direction = $sortingRule['direction'] ?? null;
 
