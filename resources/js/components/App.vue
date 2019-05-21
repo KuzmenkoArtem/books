@@ -236,6 +236,7 @@
 
             removeFilterGroup(index) {
                 this.filterGroups.splice(index, 1);
+                this.getBooks();
             },
 
             createBook() {
